@@ -3,14 +3,14 @@ body {
   max-width: 700px;
   margin: auto;
   padding: 2rem;
-  background: #f0f0f0;
+  background: #f5f5f5;
 }
 
-h1, h2 {
+h1 {
   text-align: center;
 }
 
-form, .job {
+form {
   background: white;
   padding: 1rem;
   border-radius: 8px;
@@ -21,12 +21,20 @@ input, textarea, button {
   width: 100%;
   padding: 10px;
   margin: 5px 0;
-  border: 1px solid #ccc;
   border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 button {
   background: #007bff;
   color: white;
   border: none;
+  cursor: pointer;
+}
+
+.job {
+  background: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
 }
