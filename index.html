@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Handyman Job App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Request a Job</h1>
+  <form id="jobForm">
+    <input name="name" type="text" placeholder="Your Name" required />
+    <input name="contact" type="email" placeholder="Your Email" required />
+    <input name="job_type" type="text" placeholder="Job Type" required />
+    <textarea name="description" placeholder="Describe the job..." required></textarea>
+    <input name="preferred_date" type="date" required />
+    <input name="photo_url" type="text" placeholder="Photo URL (optional)" />
+    <button type="submit">Submit</button>
+  </form>
+
+  <hr>
+
+  <h2>Inbox</h2>
+  <div id="jobs"></div>
+
+  <script>
+    async function loadJobs() {
+      try {
+        const res = await fetch('/api/jobs');
+        const jobs = await res.json();
+
+        const container = document.getElementById('jobs');
+        container.innerHTML = jobs.map(job => `
+          <div class="job">
+            <h3>${job.job_type} — ${job.name}</h3>
+            <p><strong>Contact:</strong> ${job.contact}</p>
+            <p><strong>Description:</strong> ${job.description}</p>
+            <p><strong>Date:</strong> ${job.preferred_date}</p>
+            ${job.photo_url ? `<img src="${job.photo_url}" alt="Job Photo" width="200"/>` : ''}
+            <p><em>Received: ${new Date(job.created_at).toLocaleString()}</em></p>
+            <hr/>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Failed to load jobs:', err);
+      }
+    }
+
+    document.getElementById('jobForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/submit-job', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.text();
+        alert(result);
+        e.target.reset();
+        loadJobs(); // Refresh job list
+      } catch (err) {
+        alert('Something went wrong.');
+        console.error(err);
+      }
+    });
+
+    loadJobs();
+  </script>
+</body>
+</html>
